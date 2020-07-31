@@ -1,0 +1,19 @@
+{
+  "name": "golb",
+  "version": "0.0.1",
+  "description": "A blog where people write blogs",
+  "main": "index.js",
+  "repository": "https://github.com/duongdev/golb",
+  "author": "Duong <dustin.do95@gmail.com>",
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ],
+  "devDependencies": {
+    "@targeek/prettierrc": "1.0.0",
+    "husky": "4.2.5",
+    "lerna": "3.22.1",
+    "prettier": "2.0.5",
+    "pretty-quick": "2.0.1"
+  }
+}
