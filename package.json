@@ -1,5 +1,6 @@
 {
   "name": "golb",
+  "private": true,
   "version": "0.0.1",
   "description": "A blog where people write blogs",
   "main": "index.js",
@@ -15,5 +16,10 @@
     "lerna": "3.22.1",
     "prettier": "2.0.5",
     "pretty-quick": "2.0.1"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
