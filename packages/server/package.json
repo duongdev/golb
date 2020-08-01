@@ -36,16 +36,21 @@
     "prod": "NODE_ENV=production npm-run-all build server",
     "transpile": "babel ./src --out-dir dist",
     "clean": "rimraf dist",
-    "watch:dev": "nodemon",
+    "watch:dev": "PORT=4000 DEBUG=server:* env-cmd nodemon",
     "test": "jest"
   },
   "dependencies": {
+    "axios": "0.19.2",
     "bcrypt": "5.0.0",
     "cors": "2.8.5",
     "debug": "4.1.1",
+    "env-cmd": "10.1.0",
     "express": "4.17.1",
+    "jsonwebtoken": "8.5.1",
     "mongoose": "5.9.27",
-    "morgan": "1.10.0"
+    "morgan": "1.10.0",
+    "swagger-jsdoc": "4.0.0",
+    "swagger-ui-express": "4.1.4"
   },
   "devDependencies": {
     "@babel/cli": "7.10.5",
