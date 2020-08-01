@@ -11,7 +11,7 @@ const Layout = (props) => {
   return (
     <div className={classes.root}>
       <Head>{props.title && <title>{props.title}</title>}</Head>
-      <AppBar />
+      {!props.disableAppBar && <AppBar />}
       {props.children}
     </div>
   )
