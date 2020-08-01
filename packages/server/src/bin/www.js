@@ -3,11 +3,14 @@
 import app from '../app'
 import http from 'http'
 import Debug from 'debug'
+import mongoose from 'mongoose'
 
 const debug = Debug('server:www')
 
-const port = normalizePort(process.env.PORT || '3000')
-app.set('port', port)
+const PORT = normalizePort(process.env.PORT || '3000')
+const MONGO_URI = 'mongodb://localhost:27017/blog'
+
+app.set('port', PORT)
 
 /**
  * Create HTTP server.
@@ -19,7 +22,18 @@ const server = http.createServer(app)
  * Listen on provided port, on all network interfaces.
  */
 
-server.listen(port)
+mongoose
+  .connect(MONGO_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => {
+    debug(`Connected to MongoDB at ${MONGO_URI}`)
+  })
+  .then(() => {
+    server.listen(PORT)
+  })
+
 server.on('error', onError)
 server.on('listening', onListening)
 
@@ -46,7 +60,7 @@ function onError(error) {
     throw error
   }
 
-  const bind = typeof port === 'string' ? 'Pipe ' + port : 'Port ' + port
+  const bind = typeof PORT === 'string' ? 'Pipe ' + PORT : 'Port ' + PORT
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
