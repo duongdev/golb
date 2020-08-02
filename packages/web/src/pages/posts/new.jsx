@@ -18,7 +18,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { useCallback } from 'react'
 
-const PostEditor = dynamic(() => import('components/PostEditor'), {
+const Editor = dynamic(() => import('components/Editor'), {
   ssr: false,
 })
 
@@ -41,7 +41,7 @@ const NewPost = () => {
           }}
           validationSchema={yup.object().shape({
             title: yup.string().required().min(5).max(70),
-            content: yup.object().required(),
+            content: yup.mixed().required(),
           })}
         >
           {(formik) => (
@@ -58,7 +58,7 @@ const NewPost = () => {
                   padding={4}
                 >
                   <Grid container spacing={2} justify="center">
-                    <Grid item xs={12} style={{ maxWidth: 666 }}>
+                    <Grid item xs={12}>
                       <TextField
                         placeholder="New post title here..."
                         variant="standard"
@@ -75,10 +75,10 @@ const NewPost = () => {
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <PostEditor
-                        data={formik.values.content}
-                        onChange={(e, value) =>
-                          formik.setFieldValue('content', value)
+                      <Editor
+                        value={formik.values.content}
+                        onChange={(content) =>
+                          formik.setFieldValue('content', content)
                         }
                       />
                     </Grid>
