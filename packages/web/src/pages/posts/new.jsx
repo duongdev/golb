@@ -32,7 +32,7 @@ const NewPost = () => {
   const editorRef = useRef(null)
 
   const handleSubmit = useCallback(
-    async (values) => {
+    async (values, formik) => {
       const client = createClient()
 
       const plainText = editorRef.current?.innerText
@@ -62,7 +62,7 @@ const NewPost = () => {
             content: null,
           }}
           validationSchema={yup.object().shape({
-            title: yup.string().required().min(5).max(70),
+            title: yup.string().required().min(5),
             content: yup.mixed().required(),
           })}
         >

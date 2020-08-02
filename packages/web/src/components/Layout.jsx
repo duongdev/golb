@@ -20,6 +20,7 @@ const Layout = (props) => {
 const useStyles = makeStyles(({ spacing }) => ({
   root: {
     marginTop: APP_BAR_HEIGHT + spacing(4),
+    marginBottom: spacing(4),
   },
 }))
 

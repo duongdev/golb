@@ -2,9 +2,19 @@ import React, { useMemo, useState, useCallback } from 'react'
 
 import isHotkey from 'is-hotkey'
 import { createEditor, Editor, Transforms } from 'slate'
-import { Slate, Editable, withReact, useSlate } from 'slate-react'
+import {
+  Slate,
+  Editable,
+  withReact,
+  useSlate,
+  useSelected,
+  useFocused,
+  useEditor,
+} from 'slate-react'
 import { Typography, useTheme } from '@material-ui/core'
 import { Button, Toolbar } from './components'
+import imageExtensions from 'image-extensions'
+import isUrl from 'is-url'
 import {
   FormatBold,
   FormatItalic,
@@ -15,7 +25,10 @@ import {
   FormatQuoteClose,
   FormatListNumbered,
   FormatListBulleted,
+  Image,
 } from 'mdi-material-ui'
+import { css } from 'emotion'
+import { withHistory } from 'slate-history'
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list']
 const HOTKEYS = {
@@ -26,7 +39,10 @@ const HOTKEYS = {
 }
 
 const TextEditor = (props) => {
-  const editor = useMemo(() => withReact(createEditor()), [])
+  const editor = useMemo(
+    () => withImages(withHistory(withReact(createEditor()))),
+    [],
+  )
   const [value, setValue] = useState(
     props.value ?? [
       {
@@ -60,6 +76,7 @@ const TextEditor = (props) => {
           <BlockButton format="block-quote" icon={FormatQuoteClose} />
           <BlockButton format="numbered-list" icon={FormatListNumbered} />
           <BlockButton format="bulleted-list" icon={FormatListBulleted} />
+          <InsertImageButton />
         </Toolbar>
       )}
       <Editable
@@ -173,10 +190,99 @@ const Leaf = ({ attributes, children, leaf }) => {
   return <span {...attributes}>{children}</span>
 }
 
-const Element = ({ attributes, children, element }) => {
+const withImages = (editor) => {
+  const { insertData, isVoid } = editor
+
+  editor.isVoid = (element) => {
+    return element.type === 'image' ? true : isVoid(element)
+  }
+
+  editor.insertData = (data) => {
+    const text = data.getData('text/plain')
+    const { files } = data
+
+    if (files && files.length > 0) {
+      for (const file of files) {
+        const reader = new FileReader()
+        const [mime] = file.type.split('/')
+
+        if (mime === 'image') {
+          reader.addEventListener('load', () => {
+            const url = reader.result
+            insertImage(editor, url)
+          })
+
+          reader.readAsDataURL(file)
+        }
+      }
+    } else if (isImageUrl(text)) {
+      insertImage(editor, text)
+    } else {
+      insertData(data)
+    }
+  }
+
+  return editor
+}
+
+const insertImage = (editor, url) => {
+  const text = { text: '' }
+  const image = { type: 'image', url, children: [text] }
+  Transforms.insertNodes(editor, image)
+}
+
+const ImageElement = ({ attributes, children, element }) => {
+  const selected = useSelected()
+  const focused = useFocused()
+  return (
+    <div {...attributes}>
+      <div contentEditable={false}>
+        <img
+          alt=""
+          src={element.url}
+          className={css`
+            display: block;
+            max-width: 100%;
+            max-height: 20em;
+            box-shadow: ${selected && focused ? '0 0 0 3px #B4D5FF' : 'none'};
+          `}
+        />
+      </div>
+      {children}
+    </div>
+  )
+}
+
+const InsertImageButton = () => {
+  const editor = useEditor()
+  return (
+    <Button
+      onMouseDown={(event) => {
+        event.preventDefault()
+        const url = window.prompt('Enter the URL of the image:')
+        if (!url) return
+        insertImage(editor, url)
+      }}
+    >
+      <Image />
+    </Button>
+  )
+}
+
+const isImageUrl = (url) => {
+  if (!url) return false
+  if (!isUrl(url)) return false
+  const ext = new URL(url).pathname.split('.').pop()
+  return imageExtensions.includes(ext)
+}
+
+const Element = (props) => {
+  const { attributes, children, element } = props
   const theme = useTheme()
 
   switch (element.type) {
+    case 'image':
+      return <ImageElement {...props} />
     case 'block-quote':
       return (
         <Typography

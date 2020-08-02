@@ -1,5 +1,6 @@
 import mongoose, { Schema } from 'mongoose'
 import mongooseSlugPlugin from 'mongoose-slug-plugin'
+import mongoosePaginate from 'mongoose-paginate-v2'
 
 const postSchema = new Schema(
   {
@@ -26,6 +27,7 @@ const postSchema = new Schema(
 )
 
 postSchema.plugin(mongooseSlugPlugin, { tmpl: '<%=title%>' })
+postSchema.plugin(mongoosePaginate)
 postSchema.index(
   { title: 'text', plainText: 'text' },
   {

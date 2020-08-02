@@ -16,7 +16,6 @@ const PostView = (props) => {
     return <Error statusCode={props.errorCode ?? 500} />
   }
 
-  console.log(post)
   return (
     <Layout title={post.title}>
       <Container maxWidth="md">

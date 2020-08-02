@@ -16,3 +16,12 @@ export const findPostBySlug = async (slug) => {
 
   return post
 }
+
+export const paginatePosts = async (query = {}, { page = 1, limit = 10 }) => {
+  return Post.paginate(query, {
+    page,
+    limit,
+    populate: ['createdBy'],
+    sort: '-_id',
+  })
+}
