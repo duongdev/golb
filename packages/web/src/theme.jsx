@@ -1,19 +1,20 @@
+import React from 'react'
 import { createMuiTheme } from '@material-ui/core/styles'
 import { Check } from 'mdi-material-ui'
 import Color from 'color'
 
 const defaultGuiThemeOptions = {
   mode: 'light',
-  regularFontFamily: `'Barlow',sans-serif`,
-  headingFontFamily: `'Barlow',sans-serif`,
+  regularFontFamily: `Barlow`,
+  headingFontFamily: `Barlow`,
   themeColor: '#3554A1',
   baseFontSize: 16,
 }
 
 export const REGULAR_FONT_FAMILY =
-  '"Barlow", "Roboto", "Helvetica", "Arial", sans-serif'
+  'Barlow, "Roboto", "Helvetica", "Arial", sans-serif'
 export const HEADING_FONT_FAMILY =
-  '"Barlow", "Roboto", "Helvetica", "Arial", sans-serif'
+  'Barlow, "Roboto", "Helvetica", "Arial", sans-serif'
 
 export const createGuruUiTheme = ($guiThemeOptions) => {
   const guiThemeOptions = {

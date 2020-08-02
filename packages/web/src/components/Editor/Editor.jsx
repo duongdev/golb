@@ -3,7 +3,7 @@ import React, { useMemo, useState, useCallback } from 'react'
 import isHotkey from 'is-hotkey'
 import { createEditor, Editor, Transforms } from 'slate'
 import { Slate, Editable, withReact, useSlate } from 'slate-react'
-import { Typography } from '@material-ui/core'
+import { Typography, useTheme } from '@material-ui/core'
 import { Button, Toolbar } from './components'
 import {
   FormatBold,
@@ -49,21 +49,24 @@ const TextEditor = (props) => {
 
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
-      <Toolbar>
-        <MarkButton format="bold" icon={FormatBold} />
-        <MarkButton format="italic" icon={FormatItalic} />
-        <MarkButton format="underline" icon={FormatUnderline} />
-        <MarkButton format="code" icon={CodeTags} />
-        <BlockButton format="heading-one" icon={FormatHeader1} />
-        <BlockButton format="heading-two" icon={FormatHeader2} />
-        <BlockButton format="block-quote" icon={FormatQuoteClose} />
-        <BlockButton format="numbered-list" icon={FormatListNumbered} />
-        <BlockButton format="bulleted-list" icon={FormatListBulleted} />
-      </Toolbar>
+      {!props.readOnly && (
+        <Toolbar>
+          <MarkButton format="bold" icon={FormatBold} />
+          <MarkButton format="italic" icon={FormatItalic} />
+          <MarkButton format="underline" icon={FormatUnderline} />
+          <MarkButton format="code" icon={CodeTags} />
+          <BlockButton format="heading-one" icon={FormatHeader1} />
+          <BlockButton format="heading-two" icon={FormatHeader2} />
+          <BlockButton format="block-quote" icon={FormatQuoteClose} />
+          <BlockButton format="numbered-list" icon={FormatListNumbered} />
+          <BlockButton format="bulleted-list" icon={FormatListBulleted} />
+        </Toolbar>
+      )}
       <Editable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         placeholder="Write your post content here..."
+        readOnly={props.disabled || props.readOnly}
         onKeyDown={(event) => {
           for (const hotkey in HOTKEYS) {
             if (isHotkey(hotkey, event)) {
@@ -171,20 +174,45 @@ const Leaf = ({ attributes, children, leaf }) => {
 }
 
 const Element = ({ attributes, children, element }) => {
+  const theme = useTheme()
+
   switch (element.type) {
     case 'block-quote':
-      return <blockquote {...attributes}>{children}</blockquote>
+      return (
+        <Typography
+          variant="h6"
+          color="textSecondary"
+          style={{
+            borderLeft: `solid 5px ${theme.palette.text.secondary}`,
+            padding: theme.spacing(0.5, 0),
+            margin: theme.spacing(1.5, 0),
+          }}
+          {...attributes}
+        >
+          <blockquote>{children}</blockquote>
+        </Typography>
+      )
     case 'bulleted-list':
       return <ul {...attributes}>{children}</ul>
     case 'heading-one':
       return (
-        <Typography variant="h5" {...attributes}>
+        <Typography
+          variant="h4"
+          gutterBottom
+          style={{ marginTop: theme.spacing(3), ...attributes.style }}
+          {...attributes}
+        >
           {children}
         </Typography>
       )
     case 'heading-two':
       return (
-        <Typography variant="h6" {...attributes}>
+        <Typography
+          variant="h5"
+          gutterBottom
+          style={{ marginTop: theme.spacing(3), ...attributes.style }}
+          {...attributes}
+        >
           {children}
         </Typography>
       )

@@ -17,6 +17,9 @@ import Logo from 'components/Logo'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { useCallback } from 'react'
+import { createClient } from 'api-client'
+import { useRef } from 'react'
+import { useRouter } from 'next/router'
 
 const Editor = dynamic(() => import('components/Editor'), {
   ssr: false,
@@ -25,10 +28,29 @@ const Editor = dynamic(() => import('components/Editor'), {
 const NewPost = () => {
   const classes = useStyles()
   const user = useAuth()
+  const router = useRouter()
+  const editorRef = useRef(null)
 
-  const handleSubmit = useCallback(async (values, formik) => {
-    console.log(values)
-  }, [])
+  const handleSubmit = useCallback(
+    async (values) => {
+      const client = createClient()
+
+      const plainText = editorRef.current?.innerText
+        .replace(/\n/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+
+      const { data: post } = await client.post(`/posts`, {
+        title: values.title,
+        content: values.content,
+        plainText,
+      })
+
+      if (post && post.slug) {
+        router.push(`/posts/[postSlug]`, `/posts/${post.slug}`)
+      }
+    },
+    [router],
+  )
 
   return (
     <Layout title="Write a new post" disableAppBar={user}>
@@ -48,7 +70,7 @@ const NewPost = () => {
             <>
               <AppBar
                 onSubmit={() => formik.submitForm()}
-                disabled={!formik.isValid}
+                disabled={!formik.isValid || formik.isSubmitting}
               />
               <Container maxWidth="md">
                 <Box
@@ -60,6 +82,7 @@ const NewPost = () => {
                   <Grid container spacing={2} justify="center">
                     <Grid item xs={12}>
                       <TextField
+                        fullWidth
                         placeholder="New post title here..."
                         variant="standard"
                         autoFocus
@@ -71,16 +94,19 @@ const NewPost = () => {
                         onChange={(e) =>
                           formik.setFieldValue('title', e.target.value)
                         }
-                        style={{ maxWidth: 650 }}
+                        disabled={formik.isSubmitting}
                       />
                     </Grid>
                     <Grid item xs={12}>
-                      <Editor
-                        value={formik.values.content}
-                        onChange={(content) =>
-                          formik.setFieldValue('content', content)
-                        }
-                      />
+                      <div ref={editorRef}>
+                        <Editor
+                          value={formik.values.content}
+                          onChange={(content) =>
+                            formik.setFieldValue('content', content)
+                          }
+                          disabled={formik.isSubmitting}
+                        />
+                      </div>
                     </Grid>
                   </Grid>
                 </Box>
@@ -138,7 +164,7 @@ const useStyles = makeStyles(({ typography, palette, shadows }) => ({
   postTitle: { fontSize: typography.h4.fontSize },
 }))
 
-export const getServerSideProps = async () => {
+export const getServerSideProps = async (ctx) => {
   return { props: {} }
 }
 

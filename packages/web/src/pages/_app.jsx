@@ -3,9 +3,10 @@ import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../theme'
-import { parseCookies } from 'nookies'
 import { getAuthUser } from 'api-client'
 import { AuthProvider } from 'contexts/AuthContext'
+
+import './_app.css'
 
 export default function MyApp(props) {
   const { Component, pageProps } = props
