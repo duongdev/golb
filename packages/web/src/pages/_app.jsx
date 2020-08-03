@@ -1,15 +1,20 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import Head from 'next/head'
 import { ThemeProvider } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../theme'
-import { parseCookies } from 'nookies'
 import { getAuthUser } from 'api-client'
 import { AuthProvider } from 'contexts/AuthContext'
 
+import './_app.css'
+import { useRouter } from 'next/router'
+import useScrollRestoration from 'hooks/useScrollRestoration'
+
 export default function MyApp(props) {
   const { Component, pageProps } = props
+  const router = useRouter()
+
+  useScrollRestoration(router)
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
@@ -43,9 +48,4 @@ MyApp.getInitialProps = async ({ ctx }) => {
   const user = await getAuthUser(ctx)
 
   return { user }
-}
-
-MyApp.propTypes = {
-  Component: PropTypes.elementType.isRequired,
-  pageProps: PropTypes.object.isRequired,
 }

@@ -9,15 +9,36 @@
   },
   "dependencies": {
     "@material-ui/core": "4.11.0",
+    "@material-ui/lab": "4.0.0-alpha.56",
     "axios": "0.19.2",
     "color": "3.1.2",
+    "emotion": "10.0.27",
+    "formik": "2.1.5",
+    "image-extensions": "1.1.0",
+    "is-hotkey": "0.1.6",
+    "is-url": "1.2.4",
     "mdi-material-ui": "6.17.0",
+    "moment": "2.27.0",
     "next": "9.5.1",
     "nookies": "2.3.2",
     "react": "16.13.1",
-    "react-dom": "16.13.1"
+    "react-dom": "16.13.1",
+    "slate": "0.58.4",
+    "slate-history": "0.58.4",
+    "slate-react": "0.58.4",
+    "yup": "0.29.2"
   },
   "devDependencies": {
-    "@targeek/tslint-config": "1.0.0"
+    "@targeek/tslint-config": "1.0.0",
+    "@typescript-eslint/eslint-plugin": "2.x",
+    "@typescript-eslint/parser": "2.x",
+    "babel-eslint": "10.x",
+    "eslint": "6.x",
+    "eslint-config-react-app": "5.2.1",
+    "eslint-plugin-flowtype": "4.x",
+    "eslint-plugin-import": "2.x",
+    "eslint-plugin-jsx-a11y": "6.x",
+    "eslint-plugin-react": "7.x",
+    "eslint-plugin-react-hooks": "2.x"
   }
 }

@@ -23,7 +23,7 @@ const userSchema = new Schema(
       type: String,
     },
   },
-  { timestamps: true },
+  { timestamps: true, toJSON: { getters: true } },
 )
 
 export const User = mongoose.model('User', userSchema)
