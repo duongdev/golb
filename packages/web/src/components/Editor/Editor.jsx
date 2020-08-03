@@ -11,7 +11,7 @@ import {
   useFocused,
   useEditor,
 } from 'slate-react'
-import { Typography, useTheme } from '@material-ui/core'
+import { Typography, useTheme, makeStyles } from '@material-ui/core'
 import { Button, Toolbar } from './components'
 import imageExtensions from 'image-extensions'
 import isUrl from 'is-url'
@@ -29,6 +29,7 @@ import {
 } from 'mdi-material-ui'
 import { css } from 'emotion'
 import { withHistory } from 'slate-history'
+import { APP_BAR_HEIGHT } from 'constants/ui'
 
 const LIST_TYPES = ['numbered-list', 'bulleted-list']
 const HOTKEYS = {
@@ -39,6 +40,7 @@ const HOTKEYS = {
 }
 
 const TextEditor = (props) => {
+  const classes = useStyles(props)
   const editor = useMemo(
     () => withImages(withHistory(withReact(createEditor()))),
     [],
@@ -66,18 +68,20 @@ const TextEditor = (props) => {
   return (
     <Slate editor={editor} value={value} onChange={handleChange}>
       {!props.readOnly && (
-        <Toolbar>
-          <MarkButton format="bold" icon={FormatBold} />
-          <MarkButton format="italic" icon={FormatItalic} />
-          <MarkButton format="underline" icon={FormatUnderline} />
-          <MarkButton format="code" icon={CodeTags} />
-          <BlockButton format="heading-one" icon={FormatHeader1} />
-          <BlockButton format="heading-two" icon={FormatHeader2} />
-          <BlockButton format="block-quote" icon={FormatQuoteClose} />
-          <BlockButton format="numbered-list" icon={FormatListNumbered} />
-          <BlockButton format="bulleted-list" icon={FormatListBulleted} />
-          <InsertImageButton />
-        </Toolbar>
+        <div className={classes.toolbar}>
+          <Toolbar>
+            <MarkButton format="bold" icon={FormatBold} />
+            <MarkButton format="italic" icon={FormatItalic} />
+            <MarkButton format="underline" icon={FormatUnderline} />
+            <MarkButton format="code" icon={CodeTags} />
+            <BlockButton format="heading-one" icon={FormatHeader1} />
+            <BlockButton format="heading-two" icon={FormatHeader2} />
+            <BlockButton format="block-quote" icon={FormatQuoteClose} />
+            <BlockButton format="numbered-list" icon={FormatListNumbered} />
+            <BlockButton format="bulleted-list" icon={FormatListBulleted} />
+            <InsertImageButton />
+          </Toolbar>
+        </div>
       )}
       <Editable
         renderElement={renderElement}
@@ -97,6 +101,15 @@ const TextEditor = (props) => {
     </Slate>
   )
 }
+
+const useStyles = makeStyles(({ spacing, palette }) => ({
+  toolbar: {
+    position: 'sticky',
+    top: APP_BAR_HEIGHT,
+    paddingTop: spacing(2),
+    backgroundColor: palette.background.paper,
+  },
+}))
 
 const toggleBlock = (editor, format) => {
   const isActive = isBlockActive(editor, format)
