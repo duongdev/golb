@@ -44,7 +44,7 @@ const NewPost = () => {
       })
 
       if (post && post.slug) {
-        router.push(`/posts/[postSlug]`, `/posts/${post.slug}`)
+        router.push(`/posts/[postSlugOrId]`, `/posts/${post.slug}`)
       }
     },
     [router],

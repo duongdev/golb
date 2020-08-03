@@ -1,5 +1,5 @@
 import Post from '../models/Post'
-import { isValidObjectId } from 'mongoose'
+import { isValidObjectId } from '../utils/common'
 
 export const createPost = async ({ title, content, plainText, userId }) => {
   const post = await Post.create({
@@ -13,6 +13,7 @@ export const createPost = async ({ title, content, plainText, userId }) => {
 }
 
 export const findPostBySlugOrId = async (slugOrId) => {
+  console.log(slugOrId, isValidObjectId(slugOrId))
   let query = {}
   if (isValidObjectId(slugOrId)) {
     query = { $or: [{ _id: slugOrId }, { slug: slugOrId }] }
@@ -31,4 +32,27 @@ export const paginatePosts = async (query = {}, { page = 1, limit = 10 }) => {
     populate: ['createdBy'],
     sort: '-_id',
   })
+}
+
+export const updatePost = async ({ slugOrId, userId }, update) => {
+  let query = { createdBy: userId }
+  if (isValidObjectId(slugOrId)) {
+    query = { ...query, $or: [{ _id: slugOrId }, { slug: slugOrId }] }
+  } else {
+    query = { ...query, slug: slugOrId }
+  }
+  const post = await Post.findOneAndUpdate(query, update, {
+    new: true,
+  }).populate('createdBy')
+
+  if (post) {
+    post.slug = await Post.getUniqueSlug(post._id, post.title)
+    await post.save()
+  }
+
+  return post
+}
+
+export const deletePost = async ({ postId, userId }) => {
+  return Post.findOneAndRemove({ _id: postId, createdBy: userId })
 }

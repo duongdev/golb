@@ -18,6 +18,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import dynamic from 'next/dynamic'
 import { useCallback } from 'react'
+import { useRouter } from 'next/router'
 
 const Editor = dynamic(() => import('components/Editor'), {
   ssr: false,
@@ -28,13 +29,33 @@ const PostEdit = (props) => {
   const classes = useStyles(props)
   const { post, user, errorCode } = props
   const editorRef = useRef(null)
+  const router = useRouter()
 
   const isPostAuthor = useMemo(() => post?.createdBy.id === user?.id, [
     post,
     user,
   ])
 
-  const handleSubmit = useCallback(() => {}, [])
+  const handleSubmit = useCallback(
+    async (values, formik) => {
+      const client = createClient()
+
+      const plainText = editorRef.current?.innerText
+        .replace(/\n/g, ' ')
+        .replace(/\s{2,}/g, ' ')
+
+      const { data: updatedPost } = await client.post(`/posts/${post.id}`, {
+        title: values.title,
+        content: values.content,
+        plainText,
+      })
+
+      if (updatedPost && updatedPost.slug) {
+        router.push(`/posts/[postSlugOrId]`, `/posts/${updatedPost.slug}`)
+      }
+    },
+    [post, router],
+  )
 
   if (errorCode) {
     return <Error statusCode={errorCode} />
@@ -160,7 +181,7 @@ export const getServerSideProps = async (ctx) => {
 
     return { props: { post: data ?? null } }
   } catch (error) {
-    return { props: { post: null, errorCode: error.response.status } }
+    return { props: { post: null, errorCode: error?.response?.status } }
   }
 }
 
