@@ -7,9 +7,14 @@ import { getAuthUser } from 'api-client'
 import { AuthProvider } from 'contexts/AuthContext'
 
 import './_app.css'
+import { useRouter } from 'next/router'
+import useScrollRestoration from 'hooks/useScrollRestoration'
 
 export default function MyApp(props) {
   const { Component, pageProps } = props
+  const router = useRouter()
+
+  useScrollRestoration(router)
 
   React.useEffect(() => {
     // Remove the server-side injected CSS.
