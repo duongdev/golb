@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef, useCallback } from 'react'
 import Layout from 'components/Layout'
 import RequireSignIn from 'components/RequireSignIn'
 import { useAuth } from 'contexts/AuthContext'
@@ -16,9 +16,7 @@ import { APP_BAR_HEIGHT } from 'constants/ui'
 import Logo from 'components/Logo'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { useCallback } from 'react'
 import { createClient } from 'api-client'
-import { useRef } from 'react'
 import { useRouter } from 'next/router'
 
 const Editor = dynamic(() => import('components/Editor'), {

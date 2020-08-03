@@ -104,8 +104,8 @@ const ManagePostActions = (props) => {
         <MenuItem>
           <Link
             passHref
-            href="/posts/edit/[postId]"
-            as={`/posts/edit/${props.postId}`}
+            href="/posts/[postSlugOrId]/edit"
+            as={`/posts/${props.postId}/edit`}
           >
             <Box display="flex" component="a" alignItems="center">
               Edit this post
@@ -124,7 +124,7 @@ export const getServerSideProps = async (ctx) => {
   const client = createClient(ctx)
 
   try {
-    const { data } = await client.get(`/posts/${ctx.query.postSlug}`)
+    const { data } = await client.get(`/posts/${ctx.query.postSlugOrId}`)
 
     return { props: { post: data ?? null } }
   } catch (error) {

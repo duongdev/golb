@@ -1,5 +1,9 @@
 import { requireUser } from '../middlewares/auth'
-import { createPost, findPostBySlug, paginatePosts } from '../controllers/posts'
+import {
+  createPost,
+  findPostBySlugOrId,
+  paginatePosts,
+} from '../controllers/posts'
 
 const { Router } = require('express')
 
@@ -26,10 +30,10 @@ router
     res.json(result)
   })
 
-router.get(`/:postSlug`, async (req, res) => {
-  const { postSlug } = req.params
+router.get(`/:postSlugOrId`, async (req, res) => {
+  const { postSlugOrId } = req.params
 
-  const post = await findPostBySlug(postSlug)
+  const post = await findPostBySlugOrId(postSlugOrId)
 
   if (post) {
     res.json(post)

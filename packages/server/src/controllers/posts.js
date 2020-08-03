@@ -1,4 +1,5 @@
 import Post from '../models/Post'
+import { isValidObjectId } from 'mongoose'
 
 export const createPost = async ({ title, content, plainText, userId }) => {
   const post = await Post.create({
@@ -11,8 +12,14 @@ export const createPost = async ({ title, content, plainText, userId }) => {
   return post
 }
 
-export const findPostBySlug = async (slug) => {
-  const post = await Post.findOne({ slug }).populate('createdBy')
+export const findPostBySlugOrId = async (slugOrId) => {
+  let query = {}
+  if (isValidObjectId(slugOrId)) {
+    query = { $or: [{ _id: slugOrId }, { slug: slugOrId }] }
+  } else {
+    query = { slug: slugOrId }
+  }
+  const post = await Post.findOne(query).populate('createdBy')
 
   return post
 }
