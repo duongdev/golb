@@ -164,7 +164,7 @@ const useStyles = makeStyles(({ typography, palette, shadows }) => ({
   postTitle: { fontSize: typography.h4.fontSize },
 }))
 
-export const getServerSideProps = async (ctx) => {
+export const getServerSideProps = async () => {
   return { props: {} }
 }
 
