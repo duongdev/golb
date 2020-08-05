@@ -26,6 +26,7 @@ mongoose
   .connect(MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: true,
   })
   .then(() => {
     debug(`Connected to MongoDB at ${MONGO_URI}`)

@@ -1,5 +1,11 @@
 import { requireUser } from '../middlewares/auth'
-import { createPost, findPostBySlug, paginatePosts } from '../controllers/posts'
+import {
+  createPost,
+  findPostBySlugOrId,
+  paginatePosts,
+  updatePost,
+  deletePost,
+} from '../controllers/posts'
 
 const { Router } = require('express')
 
@@ -26,16 +32,46 @@ router
     res.json(result)
   })
 
-router.get(`/:postSlug`, async (req, res) => {
-  const { postSlug } = req.params
+router
+  .get(`/:postSlugOrId`, async (req, res) => {
+    const { postSlugOrId } = req.params
 
-  const post = await findPostBySlug(postSlug)
+    const post = await findPostBySlugOrId(postSlugOrId)
 
-  if (post) {
+    if (post) {
+      res.json(post)
+      return
+    }
+    res.status(404).json(null)
+  })
+  .post(`/:postSlugOrId`, requireUser, async (req, res) => {
+    const { user } = req
+    const { title, content, plainText } = req.body
+    const { postSlugOrId } = req.params
+
+    let update = {}
+    if (title) {
+      update.title = title
+    }
+    if (content) {
+      update.content = content
+    }
+    if (plainText) {
+      update.plainText = plainText
+    }
+
+    const post = await updatePost(
+      { userId: user._id, slugOrId: postSlugOrId },
+      update,
+    )
+
     res.json(post)
-    return
-  }
-  res.status(404).json(null)
-})
+  })
+  .delete(`/:postId`, requireUser, async (req, res) => {
+    const { postId } = req.params
+    const user = req.user
+    const result = await deletePost({ postId, userId: user._id })
+    res.json(result)
+  })
 
 export default router

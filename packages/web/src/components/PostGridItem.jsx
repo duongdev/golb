@@ -21,7 +21,7 @@ const PostGridItem = ({ post }) => {
           />
         </Grid>
         <Grid item>
-          <Link passHref href="/posts/[postSlug]" as={`/posts/${post.slug}`}>
+          <Link passHref href="/posts/[postSlugOrId]" as={`/posts/${post.slug}`}>
             <Typography variant="h4" component="a">
               {title}
             </Typography>
@@ -29,7 +29,7 @@ const PostGridItem = ({ post }) => {
         </Grid>
         {plainText && (
           <Grid item>
-            <Link passHref href="/posts/[postSlug]" as={`/posts/${post.slug}`}>
+            <Link passHref href="/posts/[postSlugOrId]" as={`/posts/${post.slug}`}>
               <Typography
                 variant="body1"
                 color="textSecondary"
