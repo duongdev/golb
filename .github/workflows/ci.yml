@@ -28,4 +28,6 @@ jobs:
       - name: Install dependencies
         run: yarn install --production=false
       - name: Run Test
-        run: yarn workspace server test --forceExit
+        run: |
+          yarn workspace server test --forceExit
+          yarn workspace web test
