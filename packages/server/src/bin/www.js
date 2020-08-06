@@ -8,7 +8,7 @@ import mongoose from 'mongoose'
 const debug = Debug('server:www')
 
 const PORT = normalizePort(process.env.PORT || '3000')
-const MONGO_URI = 'mongodb://localhost:27017/blog'
+const MONGO_URI = process.env.MONGO_URI
 
 app.set('port', PORT)
 

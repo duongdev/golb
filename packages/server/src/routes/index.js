@@ -9,7 +9,7 @@ const router = Router({ mergeParams: true })
 
 const routes = fs
   .readdirSync(__dirname)
-  .filter((route) => route !== 'index.js')
+  .filter((route) => !['index.js', '__tests__'].includes(route))
   .map((route) => route.replace(/\.js$/, ''))
 
 routes.forEach((route) => {

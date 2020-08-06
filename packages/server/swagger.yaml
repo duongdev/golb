@@ -1,0 +1,314 @@
+swagger: "2.0"
+info:
+  description: "This is the documentation for Golb APIs."
+  version: "0.0.1"
+  title: "GlobAPI documentation"
+  contact:
+    email: "dustin.do95@gmail.com"
+host: ""
+tags:
+- name: "user"
+  description: "User management and authentication"
+- name: "post"
+  description: "Access to posts"
+- name: "comment"
+  description: "Comments-related APIs"
+paths:
+  /users/auth:
+    post:
+      tags:
+      - "user"
+      summary: "Get the existing user or create a new user with the provider's credentials."
+      operationId: "authenticateWithGitHub"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        required: true
+        schema:
+          type: "object"
+          properties:
+            provider:
+              type: "string"
+              example: "github"
+            code:
+              type: "number"
+              example: 12345
+      responses:
+        "200":
+          description: "The existing or created user."
+          schema:
+            $ref: "#/definitions/User"
+  /users/me:
+    get:
+      tags:
+      - "user"
+      summary: "Get the user information based on the token."
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: "string"
+          format: JWT
+        required: true
+      responses:
+        "200":
+          schema:
+            $ref: "#/definitions/User"
+  /posts:
+    get:
+      tags:
+      - "post"
+      summary: "Get paginated post list with text search."
+      parameters:
+      - in: "body"
+        name: "body"
+        required: false
+        schema:
+          type: "object"
+          properties:
+            page:
+              type: "number"
+              example: 1
+              default: 1
+            limit:
+              type: "number"
+              description: "Number of posts per page"
+              example: 10
+              default: 10
+            searchText:
+              type: "string"
+              description: "Use to search for posts that have relevant text in the title and content."
+              default: ""
+              example: ""
+      responses:
+        "200":
+          schema:
+            type: "object"
+            properties:
+              docs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Post"
+              totalDocs:
+                type: "number"
+              limit:
+                type: "number"
+              totalPages:
+                type: "number"
+              page:
+                type: "number"
+              pagingCounter:
+                type: "number"
+              hasPrevPage:
+                type: "boolean"
+              hasNextPage:
+                type: "boolean"
+    post:
+      tags:
+      - post
+      summary: Create a new post
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: "string"
+          format: JWT
+        required: true
+      - in: body
+        name: body
+        required: true
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Title of the post.
+              required: true
+            content:
+              type: object
+              description: Slate.js data
+              required: true
+            plainText:
+              type: string
+              description: Plain text extracted from the content. Used for full-text search.
+              required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            $ref: "#/definitions/Post"
+  /posts/{slugOrId}:
+    get:
+      tags:
+      - post
+      summary: Get a post
+      parameters:
+      - name: slugOrId
+        in: path
+        description: "Post's slug or ID."
+        required: true
+        type: string
+      responses:
+        "200":
+          schema:
+            type: object
+            ref: "#/definitions/Post"
+        "404":
+          description: "Post ID and slug doesn't exist."
+    post:
+      tags:
+      - post
+      summary: Update an existing post
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: "string"
+          format: JWT
+        required: true
+      - name: slugOrId
+        in: path
+        description: "Post's slug or ID."
+        required: true
+        type: string
+      - name: body
+        in: body
+        schema:
+          type: object
+          properties:
+            title:
+              type: string
+              description: Title of the post.
+              required: true
+            content:
+              type: object
+              description: Slate.js data
+              required: true
+            plainText:
+              type: string
+              description: Plain text extracted from the content. Used for full-text search.
+              required: true
+      responses:
+        "200":
+          schema:
+            type: object
+            $ref: "#/definitions/Post"
+  /post/{postId}:
+    delete:
+      tags:
+      - post
+      summary: Delete an existing post
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: "string"
+          format: JWT
+        required: true
+      - name: postId
+        in: path
+        description: "ID of the being-deleted post"
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "Deleted post successfully."
+  /comments/{targetId}:
+    get:
+      tags:
+      - comment
+      summary: Get paginated comments of a target
+      parameters:
+      - name: targetId
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "The paginated list of comments"
+          schema:
+            type: object
+            properties:
+              docs:
+                type: "array"
+                items:
+                  $ref: "#/definitions/Comment"
+              totalDocs:
+                type: "number"
+              limit:
+                type: "number"
+              totalPages:
+                type: "number"
+              page:
+                type: "number"
+              pagingCounter:
+                type: "number"
+              hasPrevPage:
+                type: "boolean"
+              hasNextPage:
+                type: "boolean"
+    post:
+      tags:
+      - comment
+      summary: Create a new comment to an existing target
+      parameters:
+      - in: header
+        name: Authorization
+        schema:
+          type: "string"
+          format: JWT
+        required: true
+      - name: targetId
+        in: path
+        required: true
+        type: string
+      responses:
+        "200":
+          description: "The created comment"
+          schema:
+            $ref: "#/definitions/Comment"
+            
+     
+definitions:
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      username:
+        type: "string"
+      email:
+        type: "string"
+      name:
+        type: "string"
+      avatar:
+        type: "string"
+  Post:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+      title:
+        type: "string"
+      content:
+        type: "string"
+      plainText:
+        type: "string"
+      createdBy:
+        $ref: "#/definitions/User"
+  Comment:
+    type: "object"
+    properties:
+      content:
+        type: "string"
+      targetId:
+        type: "string"
+      createdBy:
+        $ref: "#/definitions/User"
+    
+      
+        
