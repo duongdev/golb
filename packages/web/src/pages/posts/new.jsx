@@ -9,6 +9,7 @@ import {
   AppBar as MuiAppBar,
   makeStyles,
   Button,
+  Typography,
 } from '@material-ui/core'
 import dynamic from 'next/dynamic'
 import { APP_BAR_HEIGHT } from 'constants/ui'
@@ -31,7 +32,7 @@ const NewPost = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push(`/auth?redirect=${encodeURIComponent(router.pathname)}`)
+      router.replace(`/auth?redirect=${encodeURIComponent(router.pathname)}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -56,6 +57,16 @@ const NewPost = () => {
     },
     [router],
   )
+
+  if (!user) {
+    return (
+      <Layout>
+        <Typography align="center" variant="h6">
+          Redirecting to sign in...
+        </Typography>
+      </Layout>
+    )
+  }
 
   return (
     <Layout title="Write a new post" disableAppBar={user}>

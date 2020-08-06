@@ -6,6 +6,9 @@ import {
   Container,
   Grid,
   Button,
+  Avatar,
+  IconButton,
+  Tooltip,
 } from '@material-ui/core'
 import Logo from './Logo'
 import SearchBox from './SearchBox'
@@ -13,10 +16,14 @@ import { APP_BAR_HEIGHT } from 'constants/ui'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { useCallback } from 'react'
+import { useAuth } from 'contexts/AuthContext'
+import { destroyCookie } from 'nookies'
+import { TOKEN_COOKIE } from 'constants/common'
 
 const AppBar = (props) => {
   const classes = useStyles(props)
   const router = useRouter()
+  const user = useAuth()
 
   const handleSearch = useCallback(
     (searchText) => {
@@ -24,6 +31,11 @@ const AppBar = (props) => {
     },
     [router],
   )
+
+  const handleSignOut = useCallback(() => {
+    destroyCookie(null, TOKEN_COOKIE)
+    router.reload()
+  }, [router])
 
   return (
     <MuiAppBar color="transparent" position="fixed" className={classes.root}>
@@ -43,6 +55,15 @@ const AppBar = (props) => {
               </Button>
             </Link>
           </Grid>
+          {user && (
+            <Grid item>
+              <Tooltip title="Click to sign out">
+                <IconButton size="small" onClick={handleSignOut}>
+                  <Avatar src={user.avatar} />
+                </IconButton>
+              </Tooltip>
+            </Grid>
+          )}
         </Grid>
       </Container>
     </MuiAppBar>

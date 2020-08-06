@@ -1,4 +1,4 @@
-import React, { createContext, FC, useContext } from 'react'
+import React, { createContext, useContext } from 'react'
 
 const AuthContext = createContext(null)
 
