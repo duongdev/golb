@@ -43,9 +43,9 @@ const CommentInput = (props) => {
       <Grid item>
         <UserDisplay
           disableName
-          name={user.name}
-          username={user.username}
-          avatar={user.avatar}
+          name={user?.name}
+          username={user?.username}
+          avatar={user?.avatar}
         />
       </Grid>
       <Grid item xs>
