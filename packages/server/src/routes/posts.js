@@ -1,3 +1,4 @@
+import { Router } from 'express'
 import { requireUser } from '../middlewares/auth'
 import {
   createPost,
@@ -7,12 +8,11 @@ import {
   deletePost,
 } from '../controllers/posts'
 
-const { Router } = require('express')
-
 const router = Router({ mergeParams: true })
 
 router
-  .post(`/`, requireUser, async (req, res) => {
+  .route('/')
+  .post(requireUser, async (req, res) => {
     const { title, content, plainText } = req.body
     const user = req.user
 
@@ -25,15 +25,16 @@ router
 
     return res.json(post)
   })
-  .get(`/`, async (req, res) => {
-    const { page, limit } = req.query
-    const result = await paginatePosts({}, { page, limit })
+  .get(async (req, res) => {
+    const { page, limit, searchText } = req.query
+    const result = await paginatePosts({ searchText }, { page, limit })
 
-    res.json(result)
+    res.json({ ...result, searchText })
   })
 
 router
-  .get(`/:postSlugOrId`, async (req, res) => {
+  .route(`/:postSlugOrId`)
+  .get(async (req, res) => {
     const { postSlugOrId } = req.params
 
     const post = await findPostBySlugOrId(postSlugOrId)
@@ -44,7 +45,7 @@ router
     }
     res.status(404).json(null)
   })
-  .post(`/:postSlugOrId`, requireUser, async (req, res) => {
+  .post(requireUser, async (req, res) => {
     const { user } = req
     const { title, content, plainText } = req.body
     const { postSlugOrId } = req.params
@@ -67,11 +68,12 @@ router
 
     res.json(post)
   })
-  .delete(`/:postId`, requireUser, async (req, res) => {
-    const { postId } = req.params
-    const user = req.user
-    const result = await deletePost({ postId, userId: user._id })
-    res.json(result)
-  })
+
+router.delete(`/:postId`, requireUser, async (req, res) => {
+  const { postId } = req.params
+  const user = req.user
+  const result = await deletePost({ postId, userId: user._id })
+  res.json(result)
+})
 
 export default router

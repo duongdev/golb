@@ -4,6 +4,8 @@
     "clsx",
     "editorjs",
     "formik",
-    "openapi"
+    "middlewares",
+    "openapi",
+    "virtuals"
   ]
 }

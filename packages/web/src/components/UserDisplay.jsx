@@ -9,24 +9,33 @@ const UserDisplay = ({
   avatarSize,
   subtitle,
   spacing,
+  disableName,
+  disableAvatar,
+  nameVariant,
 }) => {
   return (
     <Grid alignItems="center" container spacing={spacing}>
-      <Grid item>
-        <Link passHref href="/users/[username]" as={`/users/${username}`}>
-          <Avatar
-            style={{ height: avatarSize, width: avatarSize }}
-            src={avatar}
-            component="a"
-          />
-        </Link>
-      </Grid>
-      <Grid item>
-        <Link passHref href="/users/[username]" as={`/users/${username}`}>
-          <Typography component="a">{name}</Typography>
-        </Link>
-        {subtitle}
-      </Grid>
+      {!disableAvatar && (
+        <Grid item>
+          <Link passHref href="/users/[username]" as={`/users/${username}`}>
+            <Avatar
+              style={{ height: avatarSize, width: avatarSize }}
+              src={avatar}
+              component="a"
+            />
+          </Link>
+        </Grid>
+      )}
+      {!disableName && (
+        <Grid item>
+          <Link passHref href="/users/[username]" as={`/users/${username}`}>
+            <Typography component="a" variant={nameVariant}>
+              {name}
+            </Typography>
+          </Link>
+          {subtitle}
+        </Grid>
+      )}
     </Grid>
   )
 }

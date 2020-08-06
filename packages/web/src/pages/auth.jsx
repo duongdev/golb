@@ -6,15 +6,24 @@ import { Container, Typography } from '@material-ui/core'
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 import { TOKEN_COOKIE } from 'constants/common'
+import RequireSignIn from 'components/RequireSignIn'
 
-const Auth = ({ success, redirect, user }) => {
+const Auth = ({ success, redirect, user, showSignInOptions }) => {
   const router = useRouter()
 
   useEffect(() => {
     if (success && redirect) {
       router.replace(redirect)
     }
-  }, [])
+  }, [redirect, router, success])
+
+  if (showSignInOptions) {
+    return (
+      <Layout>
+        <RequireSignIn redirect={redirect} />
+      </Layout>
+    )
+  }
 
   return (
     <Layout>
@@ -30,7 +39,17 @@ const Auth = ({ success, redirect, user }) => {
 }
 
 export async function getServerSideProps(context) {
-  const { provider, redirect, code } = context.query
+  const { provider, redirect = null, code } = context.query
+
+  if (!(provider && code)) {
+    return {
+      props: {
+        showSignInOptions: true,
+        redirect: redirect,
+      },
+    }
+  }
+
   const apiClient = createClient()
 
   const { data } = await apiClient.post('/users/auth', {

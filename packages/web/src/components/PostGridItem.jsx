@@ -6,7 +6,7 @@ import Link from 'next/link'
 
 const PostGridItem = ({ post }) => {
   const classes = useStyles()
-  const { id, title, plainText, createdBy } = post
+  const { title, plainText, createdBy } = post
   return (
     <Box component={Paper} padding={2}>
       <Grid container spacing={2} direction="column" wrap="nowrap">
@@ -21,7 +21,11 @@ const PostGridItem = ({ post }) => {
           />
         </Grid>
         <Grid item>
-          <Link passHref href="/posts/[postSlugOrId]" as={`/posts/${post.slug}`}>
+          <Link
+            passHref
+            href="/posts/[postSlugOrId]"
+            as={`/posts/${post.slug}`}
+          >
             <Typography variant="h4" component="a">
               {title}
             </Typography>
@@ -29,7 +33,11 @@ const PostGridItem = ({ post }) => {
         </Grid>
         {plainText && (
           <Grid item>
-            <Link passHref href="/posts/[postSlugOrId]" as={`/posts/${post.slug}`}>
+            <Link
+              passHref
+              href="/posts/[postSlugOrId]"
+              as={`/posts/${post.slug}`}
+            >
               <Typography
                 variant="body1"
                 color="textSecondary"

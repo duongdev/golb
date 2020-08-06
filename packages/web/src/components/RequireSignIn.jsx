@@ -13,7 +13,7 @@ import qs from 'querystring'
 import { GH_CLIENT_ID } from 'constants/common'
 import { useRouter } from 'next/router'
 
-const RequireSignIn = () => {
+const RequireSignIn = ({ redirect, message }) => {
   const router = useRouter()
   return (
     <NoSsr>
@@ -24,8 +24,8 @@ const RequireSignIn = () => {
               <Grid container spacing={2}>
                 <Grid item xs={12}>
                   <Typography variant="h6" align="center">
-                    Sign in below to compose your post and share it with the
-                    community.
+                    {message ??
+                      'Sign in below to compose your post and share it with the community.'}
                   </Typography>
                 </Grid>
                 <Grid item xs={6}>
@@ -46,7 +46,7 @@ const RequireSignIn = () => {
                             window.location.host
                           }/auth?${qs.stringify({
                             provider: 'github',
-                            redirect: router.pathname,
+                            redirect: redirect ?? router.pathname,
                           })}`,
                       },
                     )}`}
