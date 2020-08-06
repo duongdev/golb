@@ -2,3 +2,7 @@ a {
   text-decoration: none;
   color: unset;
 }
+#nprogress .bar, #nprogress .spinner {
+  z-index: 1101 !important;
+  background: #3554A1 !important;
+}

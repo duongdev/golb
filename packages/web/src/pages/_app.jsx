@@ -5,10 +5,26 @@ import CssBaseline from '@material-ui/core/CssBaseline'
 import theme from '../theme'
 import { getAuthUser } from 'api-client'
 import { AuthProvider } from 'contexts/AuthContext'
+import NProgress from 'nprogress'
+import Router, { useRouter } from 'next/router'
+import useScrollRestoration from 'hooks/useScrollRestoration'
 
 import './_app.css'
-import { useRouter } from 'next/router'
-import useScrollRestoration from 'hooks/useScrollRestoration'
+import 'nprogress/nprogress.css'
+
+NProgress.configure({ showSpinner: false })
+
+Router.onRouteChangeStart = () => {
+  NProgress.start()
+}
+
+Router.onRouteChangeComplete = () => {
+  NProgress.done()
+}
+
+Router.onRouteChangeError = () => {
+  NProgress.done()
+}
 
 export default function MyApp(props) {
   const { Component, pageProps } = props

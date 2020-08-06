@@ -5,6 +5,7 @@
     "editorjs",
     "formik",
     "middlewares",
+    "nprogress",
     "openapi",
     "testid",
     "virtuals"
