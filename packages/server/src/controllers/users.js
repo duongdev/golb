@@ -6,7 +6,6 @@ export const authenticateWithGitHub = async ({ code }) => {
   const { data: githubTokenData } = await axios.post(
     'https://github.com/login/oauth/access_token',
     {
-      // TODO: Move to env
       client_id: process.env.GH_CLIENT_ID,
       client_secret: process.env.GH_CLIENT_SECRET,
       code,
