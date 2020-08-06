@@ -15,6 +15,7 @@ import {
   Button,
   DialogContent,
   DialogContentText,
+  Divider,
 } from '@material-ui/core'
 import Error from 'next/error'
 import { createClient } from 'api-client'
@@ -29,6 +30,7 @@ import Link from 'next/link'
 import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import Alert from '@material-ui/lab/Alert'
+import Comments from 'components/Comments'
 
 const PostView = (props) => {
   const { post } = props
@@ -82,6 +84,14 @@ const PostView = (props) => {
 
           <Grid item>
             <TextEditor readOnly value={post.content} />
+          </Grid>
+
+          <Grid item>
+            <Divider />
+          </Grid>
+
+          <Grid item>
+            <Comments targetId={post.id} />
           </Grid>
         </Grid>
       </Container>
