@@ -25,7 +25,15 @@ export const findPostBySlugOrId = async (slugOrId) => {
   return post
 }
 
-export const paginatePosts = async (query = {}, { page = 1, limit = 10 }) => {
+export const paginatePosts = async ($query = {}, { page = 1, limit = 10 }) => {
+  let query = {}
+  if ($query.searchText) {
+    query = {
+      ...query,
+      $text: { $search: $query.searchText },
+    }
+  }
+
   return Post.paginate(query, {
     page,
     limit,

@@ -1,17 +1,26 @@
-import React from 'react'
+import React, { useCallback } from 'react'
 import { Grid, TextField, Button, Typography } from '@material-ui/core'
 import UserDisplay from './UserDisplay'
 import { useAuth } from 'contexts/AuthContext'
-import { useCallback } from 'react'
 import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
 import { object, string, boolean } from 'yup'
 
-const CommentInput = () => {
+const CommentInput = (props) => {
   const router = useRouter()
   const user = useAuth()
 
-  const handleSubmit = useCallback(async () => {}, [])
+  const handleSubmit = useCallback(
+    async ({ content }, formik) => {
+      try {
+        await props.onSubmit?.(content)
+        formik.resetForm()
+      } catch (error) {
+        formik.setFieldError('content', error.message)
+      }
+    },
+    [props],
+  )
 
   const formik = useFormik({
     onSubmit: handleSubmit,
@@ -33,7 +42,7 @@ const CommentInput = () => {
     <Grid container spacing={2}>
       <Grid item>
         <UserDisplay
-          disabledName
+          disableName
           name={user.name}
           username={user.username}
           avatar={user.avatar}
@@ -51,6 +60,7 @@ const CommentInput = () => {
               value={formik.values.content}
               onChange={(e) => formik.setFieldValue('content', e.target.value)}
               error={!!(formik.submitCount && formik.errors.content)}
+              disabled={formik.isSubmitting}
               // helperText={formik.errors.content}
             />
           </Grid>
@@ -67,13 +77,19 @@ const CommentInput = () => {
                 </Grid>
               )}
               <Grid item>
-                <Button onClick={() => formik.resetForm()}>Cancel</Button>
+                <Button
+                  disabled={formik.isSubmitting}
+                  onClick={() => formik.resetForm()}
+                >
+                  Cancel
+                </Button>
               </Grid>
               <Grid item>
                 <Button
                   variant="contained"
                   color="primary"
                   onClick={() => formik.submitForm()}
+                  disabled={formik.isSubmitting || !formik.isValid}
                 >
                   Comment
                 </Button>

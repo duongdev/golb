@@ -7,7 +7,6 @@ import {
   updatePost,
   deletePost,
 } from '../controllers/posts'
-import * as commentsControllers from '../controllers/comments'
 
 const router = Router({ mergeParams: true })
 
@@ -27,16 +26,15 @@ router
     return res.json(post)
   })
   .get(async (req, res) => {
-    const { page, limit } = req.query
-    const result = await paginatePosts({}, { page, limit })
+    const { page, limit, searchText } = req.query
+    const result = await paginatePosts({ searchText }, { page, limit })
 
-    res.json(result)
+    res.json({ ...result, searchText })
   })
 
 router
   .route(`/:postSlugOrId`)
   .get(async (req, res) => {
-    console.log('here')
     const { postSlugOrId } = req.params
 
     const post = await findPostBySlugOrId(postSlugOrId)
@@ -69,37 +67,6 @@ router
     )
 
     res.json(post)
-  })
-
-router
-  .route(`/:postId/comments`)
-  .post(requireUser, async (req, res) => {
-    const {
-      user,
-      params: { postId },
-      body: { content },
-    } = req
-
-    const comment = await commentsControllers.createComment({
-      content,
-      targetId: postId,
-      userId: user._id,
-    })
-
-    res.json(comment)
-  })
-  .get(async (req, res) => {
-    const {
-      params: { postId },
-      query: { page, limit },
-    } = req
-
-    const result = await commentsControllers.paginateComments(
-      { targetId: postId },
-      { page, limit },
-    )
-
-    res.json(result)
   })
 
 router.delete(`/:postId`, requireUser, async (req, res) => {

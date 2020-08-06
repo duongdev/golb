@@ -11,9 +11,20 @@ import Logo from './Logo'
 import SearchBox from './SearchBox'
 import { APP_BAR_HEIGHT } from 'constants/ui'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
+import { useCallback } from 'react'
 
 const AppBar = (props) => {
   const classes = useStyles(props)
+  const router = useRouter()
+
+  const handleSearch = useCallback(
+    (searchText) => {
+      router.push(searchText ? `/?searchText=${searchText}` : '/')
+    },
+    [router],
+  )
+
   return (
     <MuiAppBar color="transparent" position="fixed" className={classes.root}>
       <Container maxWidth={false}>
@@ -22,7 +33,7 @@ const AppBar = (props) => {
             <Logo />
           </Grid>
           <Grid item>
-            <SearchBox />
+            <SearchBox onSearch={handleSearch} />
           </Grid>
           <Grid item xs />
           <Grid item>

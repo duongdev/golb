@@ -1,6 +1,5 @@
 import React, { useRef, useCallback } from 'react'
 import Layout from 'components/Layout'
-import RequireSignIn from 'components/RequireSignIn'
 import { useAuth } from 'contexts/AuthContext'
 import {
   Container,
@@ -18,6 +17,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { createClient } from 'api-client'
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
 const Editor = dynamic(() => import('components/Editor'), {
   ssr: false,
@@ -28,6 +28,13 @@ const NewPost = () => {
   const user = useAuth()
   const router = useRouter()
   const editorRef = useRef(null)
+
+  useEffect(() => {
+    if (!user) {
+      router.push(`/auth?redirect=${encodeURIComponent(router.pathname)}`)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleSubmit = useCallback(
     async (values, formik) => {
@@ -52,69 +59,65 @@ const NewPost = () => {
 
   return (
     <Layout title="Write a new post" disableAppBar={user}>
-      {user ? (
-        <Formik
-          onSubmit={handleSubmit}
-          initialValues={{
-            title: '',
-            content: null,
-          }}
-          validationSchema={yup.object().shape({
-            title: yup.string().required().min(5),
-            content: yup.mixed().required(),
-          })}
-        >
-          {(formik) => (
-            <>
-              <AppBar
-                onSubmit={() => formik.submitForm()}
-                disabled={!formik.isValid || formik.isSubmitting}
-              />
-              <Container maxWidth="md">
-                <Box
-                  display="flex"
-                  alignItems="center"
-                  justifyContent="center"
-                  padding={4}
-                >
-                  <Grid container spacing={2} justify="center">
-                    <Grid item xs={12}>
-                      <TextField
-                        fullWidth
-                        placeholder="New post title here..."
-                        variant="standard"
-                        autoFocus
-                        InputProps={{
-                          className: classes.postTitle,
-                          disableUnderline: true,
-                        }}
-                        value={formik.values.title}
-                        onChange={(e) =>
-                          formik.setFieldValue('title', e.target.value)
+      <Formik
+        onSubmit={handleSubmit}
+        initialValues={{
+          title: '',
+          content: null,
+        }}
+        validationSchema={yup.object().shape({
+          title: yup.string().required().min(5),
+          content: yup.mixed().required(),
+        })}
+      >
+        {(formik) => (
+          <>
+            <AppBar
+              onSubmit={() => formik.submitForm()}
+              disabled={!formik.isValid || formik.isSubmitting}
+            />
+            <Container maxWidth="md">
+              <Box
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+                padding={4}
+              >
+                <Grid container spacing={2} justify="center">
+                  <Grid item xs={12}>
+                    <TextField
+                      fullWidth
+                      placeholder="New post title here..."
+                      variant="standard"
+                      autoFocus
+                      InputProps={{
+                        className: classes.postTitle,
+                        disableUnderline: true,
+                      }}
+                      value={formik.values.title}
+                      onChange={(e) =>
+                        formik.setFieldValue('title', e.target.value)
+                      }
+                      disabled={formik.isSubmitting}
+                    />
+                  </Grid>
+                  <Grid item xs={12}>
+                    <div ref={editorRef}>
+                      <Editor
+                        value={formik.values.content}
+                        onChange={(content) =>
+                          formik.setFieldValue('content', content)
                         }
                         disabled={formik.isSubmitting}
                       />
-                    </Grid>
-                    <Grid item xs={12}>
-                      <div ref={editorRef}>
-                        <Editor
-                          value={formik.values.content}
-                          onChange={(content) =>
-                            formik.setFieldValue('content', content)
-                          }
-                          disabled={formik.isSubmitting}
-                        />
-                      </div>
-                    </Grid>
+                    </div>
                   </Grid>
-                </Box>
-              </Container>
-            </>
-          )}
-        </Formik>
-      ) : (
-        <RequireSignIn />
-      )}
+                </Grid>
+              </Box>
+            </Container>
+          </>
+        )}
+      </Formik>
     </Layout>
   )
 }

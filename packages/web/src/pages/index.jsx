@@ -19,7 +19,22 @@ export default function Home(props) {
           {props.data.docs.length === 0 && (
             <Grid item>
               <Typography align="center" color="textSecondary">
-                There is no posts created yet.
+                {props.data.searchText ? (
+                  <>
+                    Couldn't find any posts relevant to{' '}
+                    <strong>{props.data.searchText}</strong>.
+                  </>
+                ) : (
+                  'There is no posts created yet.'
+                )}
+              </Typography>
+            </Grid>
+          )}
+          {props.data.docs.length > 0 && props.data.searchText && (
+            <Grid item>
+              <Typography color="textPrimary">
+                Yay! Found <strong>{props.data.totalDocs}</strong> post(s)
+                relevant to <strong>{props.data.searchText}</strong>.
               </Typography>
             </Grid>
           )}
@@ -63,9 +78,11 @@ export default function Home(props) {
 
 export const getServerSideProps = async (ctx) => {
   const client = createClient(ctx)
-  const { page = 1 } = ctx.query
+  const { page = 1, searchText } = ctx.query
 
-  const { data } = await client.get(`/posts`, { params: { page: +page } })
+  const { data } = await client.get(`/posts`, {
+    params: { page: +page, searchText },
+  })
 
   return { props: { data } }
 }
