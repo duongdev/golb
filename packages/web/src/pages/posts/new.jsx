@@ -88,7 +88,12 @@ const NewPost = () => {
               disabled={!formik.isValid || formik.isSubmitting}
             />
             <Container maxWidth="md">
-              <Box display="flex" alignItems="center" justifyContent="center">
+              <Box
+                data-testid="post-editor"
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
                 <Grid container spacing={2} justify="center">
                   <Grid item xs={12}>
                     <TextField

@@ -8,7 +8,7 @@ const PostGridItem = ({ post }) => {
   const classes = useStyles()
   const { title, plainText, createdBy } = post
   return (
-    <Box component={Paper} padding={2}>
+    <Box component={Paper} padding={2} data-testid="post-grid-item">
       <Grid container spacing={2} direction="column" wrap="nowrap">
         <Grid item>
           <UserDisplay
