@@ -1,0 +1,31 @@
+{
+  "name": "golb-api",
+  "description": "Golb API",
+  "scripts": {},
+  "env": {
+    "MONGODB_URI": {
+      "required": true
+    },
+    "JWT_SECRET": {
+      "required": true
+    },
+    "NPM_CONFIG_PRODUCTION": {
+      "required": true
+    },
+    "YARN_PRODUCTION": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "addons": ["mongolab"],
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "stack": "heroku-18"
+}

@@ -7,6 +7,10 @@
   "repository": "https://github.com/duongdev/golb",
   "author": "Duong <dustin.do95@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "yarn workspace server build",
+    "start": "yarn workspace server start"
+  },
   "workspaces": [
     "packages/*"
   ],

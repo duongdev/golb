@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "npm run prod",
+    "start": "NODE_ENV=production node ./dist/bin/www",
     "build": "npm-run-all clean transpile",
     "server": "node ./dist/bin/www",
     "dev": "NODE_ENV=development npm-run-all build server",
