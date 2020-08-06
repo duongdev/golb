@@ -86,8 +86,8 @@ describe(`Test users controllers`, () => {
   describe('findUserById', () => {
     it(`should return null if the ID doesn't exist`, async () => {
       expect(
-        usersControllers.findUserById(mongoose.Types.ObjectId()),
-      ).resolves.toBe(null)
+        await usersControllers.findUserById(mongoose.Types.ObjectId()),
+      ).toBe(null)
     })
     it(`should return the correct user the an existing ID`, async () => {
       expect.assertions(1)
@@ -98,8 +98,8 @@ describe(`Test users controllers`, () => {
         name: 'Duong Do',
       })
       expect(
-        usersControllers.findUserById(user._id.toString()),
-      ).resolves.toMatchObject({
+        await usersControllers.findUserById(user._id.toString()),
+      ).toMatchObject({
         email: 'dustin.do95@gmail.com',
         username: 'duongdev',
         avatar: 'http://example.com/an_avatar.jpg',

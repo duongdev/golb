@@ -27,7 +27,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - name: Install dependencies
         run: yarn install --production=false
-      - name: Run Test
-        run: |
-          yarn workspace server test --forceExit
-          yarn workspace web test
+      - name: Test server
+        run: yarn workspace server test --forceExit
+      - name: Test web
+        run: yarn workspace web test
