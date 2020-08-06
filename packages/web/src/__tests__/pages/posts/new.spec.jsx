@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor } from '@testing-library/react'
 import { mockNextUseRouter } from 'utils/testing'
-import NewPost from './new'
+import NewPost from '../../../pages/posts/new'
 import { AuthProvider } from 'contexts/AuthContext'
 
 describe('pages/posts/new', () => {

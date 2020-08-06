@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { mockNextUseRouter } from 'utils/testing'
-import App from './index'
+import App from '../../pages/index'
 
 describe('pages/index', () => {
   const data = {

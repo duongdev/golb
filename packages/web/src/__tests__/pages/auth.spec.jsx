@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { mockNextUseRouter } from 'utils/testing'
-import Auth from './auth'
+import Auth from 'pages/auth'
 
 describe('pages/auth', () => {
   beforeEach(() => {
