@@ -4,6 +4,7 @@ import app from '../app'
 import http from 'http'
 import Debug from 'debug'
 import mongoose from 'mongoose'
+import * as dotenv from 'dotenv'
 
 const NODE_ENV = process.env.NODE_ENV || 'development'
 

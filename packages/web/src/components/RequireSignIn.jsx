@@ -17,7 +17,7 @@ const RequireSignIn = ({ redirect, message }) => {
   const router = useRouter()
   return (
     <NoSsr>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" data-testid="require-sign-in">
         <Grid container spacing={2} direction-="column" wrap="nowrap">
           <Grid item xs={12}>
             <Box component={Paper} padding={3}>

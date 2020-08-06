@@ -6,6 +6,7 @@
     "formik",
     "middlewares",
     "openapi",
+    "testid",
     "virtuals"
   ]
 }

@@ -18,7 +18,11 @@ export default function Home(props) {
         <Grid container spacing={2} direction="column" wrap="nowrap">
           {props.data.docs.length === 0 && (
             <Grid item>
-              <Typography align="center" color="textSecondary">
+              <Typography
+                align="center"
+                color="textSecondary"
+                data-testid="empty-message"
+              >
                 {props.data.searchText ? (
                   <>
                     Couldn't find any posts relevant to{' '}
@@ -39,7 +43,7 @@ export default function Home(props) {
             </Grid>
           )}
           {props.data.docs.map((post) => (
-            <Grid item key={post._id}>
+            <Grid item key={post.id}>
               <PostGridItem post={post} />
             </Grid>
           ))}
@@ -48,6 +52,7 @@ export default function Home(props) {
             <Grid item>
               <Box display="flex" justifyContent="center">
                 <Pagination
+                  data-testid="pagination"
                   color="primary"
                   count={props.data.totalPages}
                   page={props.data.page}
