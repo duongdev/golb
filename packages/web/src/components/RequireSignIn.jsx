@@ -28,7 +28,7 @@ const RequireSignIn = ({ redirect, message }) => {
                       'Sign in below to compose your post and share it with the community.'}
                   </Typography>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Button
                     fullWidth
                     size="large"
@@ -54,7 +54,7 @@ const RequireSignIn = ({ redirect, message }) => {
                     Sign in with GitHub
                   </Button>
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12} sm={6}>
                   <Button
                     fullWidth
                     size="large"
