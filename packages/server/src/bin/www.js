@@ -5,6 +5,19 @@ import http from 'http'
 import Debug from 'debug'
 import mongoose from 'mongoose'
 
+const NODE_ENV = process.env.NODE_ENV || 'development'
+
+const envFileList = [
+  `.env.${NODE_ENV}.local`,
+  `.env.${NODE_ENV}`,
+  '.env.local',
+  '.env',
+]
+
+envFileList.forEach((file) => {
+  dotenv.config({ path: file })
+})
+
 const debug = Debug('server:www')
 
 const PORT = normalizePort(process.env.PORT || '3000')
