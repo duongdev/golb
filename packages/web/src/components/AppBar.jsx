@@ -73,7 +73,7 @@ const UserMenu = () => {
   const user = useAuth()
   const [menuAnchorEl, setMenuAnchorEl] = useState(null)
   const handleSignOut = useCallback(() => {
-    destroyCookie(null, TOKEN_COOKIE)
+    destroyCookie(null, TOKEN_COOKIE, { path: '/' })
 
     setTimeout(() => router.reload(), 500)
   }, [router])
@@ -94,9 +94,7 @@ const UserMenu = () => {
         {!user && (
           <MenuItem
             onClick={() =>
-              router.push(
-                `/auth?redirect=${encodeURIComponent(router.pathname)}`,
-              )
+              router.push(`/auth?redirect=${encodeURIComponent(router.asPath)}`)
             }
           >
             Sign in
