@@ -8,7 +8,10 @@ import {
   Button,
   Avatar,
   IconButton,
-  Tooltip,
+  Hidden,
+  Box,
+  Menu,
+  MenuItem,
 } from '@material-ui/core'
 import Logo from './Logo'
 import SearchBox from './SearchBox'
@@ -19,11 +22,11 @@ import { useCallback } from 'react'
 import { useAuth } from 'contexts/AuthContext'
 import { destroyCookie } from 'nookies'
 import { TOKEN_COOKIE } from 'constants/common'
+import { useState } from 'react'
 
 const AppBar = (props) => {
   const classes = useStyles(props)
   const router = useRouter()
-  const user = useAuth()
 
   const handleSearch = useCallback(
     (searchText) => {
@@ -32,11 +35,6 @@ const AppBar = (props) => {
     [router],
   )
 
-  const handleSignOut = useCallback(() => {
-    destroyCookie(null, TOKEN_COOKIE)
-    router.reload()
-  }, [router])
-
   return (
     <MuiAppBar color="transparent" position="fixed" className={classes.root}>
       <Container maxWidth={false}>
@@ -44,29 +42,72 @@ const AppBar = (props) => {
           <Grid item>
             <Logo />
           </Grid>
-          <Grid item>
-            <SearchBox onSearch={handleSearch} />
+          <Grid item xs>
+            <Box maxWidth={320}>
+              <SearchBox onSearch={handleSearch} />
+            </Box>
           </Grid>
-          <Grid item xs />
+          <Hidden xsDown>
+            <>
+              <Grid item xs />
+              <Grid item>
+                <Link href="/posts/new" passHref>
+                  <Button variant="contained" color="primary" component="a">
+                    Write a post
+                  </Button>
+                </Link>
+              </Grid>
+            </>
+          </Hidden>
           <Grid item>
-            <Link href="/posts/new" passHref>
-              <Button variant="contained" color="primary" component="a">
-                Write a post
-              </Button>
-            </Link>
+            <UserMenu />
           </Grid>
-          {user && (
-            <Grid item>
-              <Tooltip title="Click to sign out">
-                <IconButton size="small" onClick={handleSignOut}>
-                  <Avatar src={user.avatar} />
-                </IconButton>
-              </Tooltip>
-            </Grid>
-          )}
         </Grid>
       </Container>
     </MuiAppBar>
+  )
+}
+
+const UserMenu = () => {
+  const router = useRouter()
+  const user = useAuth()
+  const [menuAnchorEl, setMenuAnchorEl] = useState(null)
+  const handleSignOut = useCallback(() => {
+    destroyCookie(null, TOKEN_COOKIE)
+
+    setTimeout(() => router.reload(), 500)
+  }, [router])
+
+  return (
+    <>
+      <IconButton
+        size="small"
+        onClick={(e) => setMenuAnchorEl(e.currentTarget)}
+      >
+        <Avatar src={user?.avatar} />
+      </IconButton>
+      <Menu
+        open={!!menuAnchorEl}
+        onClose={() => setMenuAnchorEl(null)}
+        anchorEl={menuAnchorEl}
+      >
+        {!user && (
+          <MenuItem
+            onClick={() =>
+              router.push(
+                `/auth?redirect=${encodeURIComponent(router.pathname)}`,
+              )
+            }
+          >
+            Sign in
+          </MenuItem>
+        )}
+        <MenuItem onClick={() => router.push('/posts/new')}>
+          Write new post
+        </MenuItem>
+        {user && <MenuItem onClick={handleSignOut}>Sign out</MenuItem>}
+      </Menu>
+    </>
   )
 }
 

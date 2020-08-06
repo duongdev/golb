@@ -16,6 +16,7 @@ import {
   DialogContent,
   DialogContentText,
   Divider,
+  Hidden,
 } from '@material-ui/core'
 import Error from 'next/error'
 import { createClient } from 'api-client'
@@ -123,9 +124,19 @@ const ManagePostActions = (props) => {
 
   return (
     <>
-      <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
-        <DotsVertical />
-      </IconButton>
+      <Hidden xsDown>
+        <IconButton onClick={(event) => setAnchorEl(event.currentTarget)}>
+          <DotsVertical />
+        </IconButton>
+      </Hidden>
+      <Hidden smUp>
+        <Button
+          onClick={(event) => setAnchorEl(event.currentTarget)}
+          variant="contained"
+        >
+          Manage your post...
+        </Button>
+      </Hidden>
       <Menu
         open={!!anchorEl}
         anchorEl={anchorEl}
