@@ -2,18 +2,19 @@ import Post from '../models/Post'
 import { isValidObjectId } from '../utils/common'
 
 export const createPost = async ({ title, content, plainText, userId }) => {
-  const post = await Post.create({
+  let post = await Post.create({
     title,
     content,
     plainText,
     createdBy: userId,
   })
 
+  post = post.populate('createdBy').execPopulate()
+
   return post
 }
 
 export const findPostBySlugOrId = async (slugOrId) => {
-  console.log(slugOrId, isValidObjectId(slugOrId))
   let query = {}
   if (isValidObjectId(slugOrId)) {
     query = { $or: [{ _id: slugOrId }, { slug: slugOrId }] }
