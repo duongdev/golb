@@ -1,3 +1,4 @@
+import { Router } from 'express'
 import { requireUser } from '../middlewares/auth'
 import {
   createPost,
@@ -6,13 +7,13 @@ import {
   updatePost,
   deletePost,
 } from '../controllers/posts'
-
-const { Router } = require('express')
+import * as commentsControllers from '../controllers/comments'
 
 const router = Router({ mergeParams: true })
 
 router
-  .post(`/`, requireUser, async (req, res) => {
+  .route('/')
+  .post(requireUser, async (req, res) => {
     const { title, content, plainText } = req.body
     const user = req.user
 
@@ -25,7 +26,7 @@ router
 
     return res.json(post)
   })
-  .get(`/`, async (req, res) => {
+  .get(async (req, res) => {
     const { page, limit } = req.query
     const result = await paginatePosts({}, { page, limit })
 
@@ -33,7 +34,9 @@ router
   })
 
 router
-  .get(`/:postSlugOrId`, async (req, res) => {
+  .route(`/:postSlugOrId`)
+  .get(async (req, res) => {
+    console.log('here')
     const { postSlugOrId } = req.params
 
     const post = await findPostBySlugOrId(postSlugOrId)
@@ -44,7 +47,7 @@ router
     }
     res.status(404).json(null)
   })
-  .post(`/:postSlugOrId`, requireUser, async (req, res) => {
+  .post(requireUser, async (req, res) => {
     const { user } = req
     const { title, content, plainText } = req.body
     const { postSlugOrId } = req.params
@@ -67,11 +70,43 @@ router
 
     res.json(post)
   })
-  .delete(`/:postId`, requireUser, async (req, res) => {
-    const { postId } = req.params
-    const user = req.user
-    const result = await deletePost({ postId, userId: user._id })
+
+router
+  .route(`/:postId/comments`)
+  .post(requireUser, async (req, res) => {
+    const {
+      user,
+      params: { postId },
+      body: { content },
+    } = req
+
+    const comment = await commentsControllers.createComment({
+      content,
+      targetId: postId,
+      userId: user._id,
+    })
+
+    res.json(comment)
+  })
+  .get(async (req, res) => {
+    const {
+      params: { postId },
+      query: { page, limit },
+    } = req
+
+    const result = await commentsControllers.paginateComments(
+      { targetId: postId },
+      { page, limit },
+    )
+
     res.json(result)
   })
+
+router.delete(`/:postId`, requireUser, async (req, res) => {
+  const { postId } = req.params
+  const user = req.user
+  const result = await deletePost({ postId, userId: user._id })
+  res.json(result)
+})
 
 export default router
