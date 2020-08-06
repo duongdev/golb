@@ -5,10 +5,12 @@ import { useAuth } from 'contexts/AuthContext'
 import { useRouter } from 'next/router'
 import { useFormik } from 'formik'
 import { object, string, boolean } from 'yup'
+import { useRef } from 'react'
 
 const CommentInput = (props) => {
   const router = useRouter()
   const user = useAuth()
+  const inputRef = useRef()
 
   const handleSubmit = useCallback(
     async ({ content }, formik) => {
@@ -33,6 +35,8 @@ const CommentInput = (props) => {
 
   const handleInputFocus = useCallback(() => {
     if (!user) {
+      // eslint-disable-next-line no-unused-expressions
+      inputRef.current?.blur()
       return router.push(`/auth?redirect=${encodeURIComponent(router.asPath)}`)
     }
     formik.setFieldValue('editing', true)
@@ -43,9 +47,9 @@ const CommentInput = (props) => {
       <Grid item>
         <UserDisplay
           disableName
-          name={user.name}
-          username={user.username}
-          avatar={user.avatar}
+          name={user?.name}
+          username={user?.username}
+          avatar={user?.avatar}
         />
       </Grid>
       <Grid item xs>
@@ -61,7 +65,7 @@ const CommentInput = (props) => {
               onChange={(e) => formik.setFieldValue('content', e.target.value)}
               error={!!(formik.submitCount && formik.errors.content)}
               disabled={formik.isSubmitting}
-              // helperText={formik.errors.content}
+              InputProps={{ inputRef }}
             />
           </Grid>
           {formik.dirty && (

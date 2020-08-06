@@ -85,12 +85,7 @@ const PostEdit = (props) => {
               disabled={!formik.isValid || formik.isSubmitting || !formik.dirty}
             />
             <Container maxWidth="md">
-              <Box
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
-                padding={4}
-              >
+              <Box display="flex" alignItems="center" justifyContent="center">
                 <Grid container spacing={2} justify="center">
                   <Grid item xs={12}>
                     <TextField
