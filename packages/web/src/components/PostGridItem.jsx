@@ -26,7 +26,12 @@ const PostGridItem = ({ post }) => {
             href="/posts/[postSlugOrId]"
             as={`/posts/${post.slug}`}
           >
-            <Typography variant="h4" component="a">
+            <Typography
+              variant="h4"
+              component="a"
+              title={title}
+              className={classes.titleContent}
+            >
               {title}
             </Typography>
           </Link>
@@ -42,7 +47,7 @@ const PostGridItem = ({ post }) => {
                 variant="body1"
                 color="textSecondary"
                 component="a"
-                className={classes.content}
+                className={classes.titleContent}
               >
                 {plainText}
               </Typography>
@@ -55,7 +60,7 @@ const PostGridItem = ({ post }) => {
 }
 
 const useStyles = makeStyles(() => ({
-  content: {
+  titleContent: {
     display: '-webkit-box',
     WebkitLineClamp: 3,
     WebkitBoxOrient: 'vertical',

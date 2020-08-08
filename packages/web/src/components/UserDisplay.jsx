@@ -18,24 +18,24 @@ const UserDisplay = ({
       {!disableAvatar && (
         <Grid item>
           {/* <Link passHref href="/users/[username]" as={`/users/${username}`}> */}
-            <Avatar
-              style={{ height: avatarSize, width: avatarSize }}
-              src={avatar}
-              // component="a"
-            />
+          <Avatar
+            style={{ height: avatarSize, width: avatarSize }}
+            src={avatar}
+            // component="a"
+          />
           {/* </Link> */}
         </Grid>
       )}
       {!disableName && (
         <Grid item>
           {/* <Link passHref href="/users/[username]" as={`/users/${username}`}> */}
-            <Typography
-              // component="a"
-              variant={nameVariant}
-              style={{ whiteSpace: 'nowrap' }}
-            >
-              {name || username || '[no name]'}
-            </Typography>
+          <Typography
+            // component="a"
+            variant={nameVariant}
+            style={{ whiteSpace: 'nowrap' }}
+          >
+            {name || `@${username}` || '[no name]'}
+          </Typography>
           {/* </Link> */}
           {subtitle}
         </Grid>
