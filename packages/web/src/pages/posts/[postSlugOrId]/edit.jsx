@@ -74,7 +74,7 @@ const PostEdit = (props) => {
           content: post.content,
         }}
         validationSchema={yup.object().shape({
-          title: yup.string().required().min(5),
+          title: yup.string().trim().min(1).required(),
           content: yup.mixed().required(),
         })}
       >
